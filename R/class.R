@@ -2,10 +2,10 @@
 
 setClass("JDBCDriver", representation("DBIDriver", identifier.quote="character", jdrv="jobjRef"))
 
-JDBC <- function(driverClass='', classPath='', identifier.quote=NA) {
+JDBC <- function(driverClass='', classPath='', identifier.quote=NA, force_JVM_restart = FALSE) {
   ## expand all paths in the classPath
   classPath <- path.expand(unlist(strsplit(classPath, .Platform$path.sep)))
-  .jinit(classPath) ## this is benign in that it's equivalent to .jaddClassPath if a JVM is running
+  .jinit(classPath, force.init = force_JVM_restart) ## this is benign in that it's equivalent to .jaddClassPath if a JVM is running and force_JVM_restart is set to FALSE
   .jaddClassPath(system.file("java", "RJDBC.jar", package="RJDBC"))
   if (nchar(driverClass) && is.jnull(.jfindClass(as.character(driverClass)[1])))
     stop("Cannot find JDBC driver class ",driverClass)
